@@ -5,55 +5,51 @@
 
 #define MAX_POINTS 100
 
-int main() {
-    FILE *GNUpipe=NULL, *data_TXT=NULL;
+void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
 
-    data_TXT = fopen("data.txt","w");
-    GNUpipe = popen("gnuplot -persist", "w");
+void printLevel(FILE *GNUpipe, FILE *data_TXT, int level, int x);
 
-    if(GNUpipe == NULL)
+int main()
+{
+    FILE *GNUpipe = NULL, *data_TXT = NULL;
+
+    setUpGraphPlot(&GNUpipe, &data_TXT);
+
+    int x = 0;
+    int y;
+    while (1)
+    {
+        y = rand() % 100;
+        printLevel(GNUpipe, data_TXT, y, x++);
+        usleep(500000); // 500ms
+    }
+
+    fclose(data_TXT);
+    return 0;
+}
+
+void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT)
+{
+    *data_TXT = fopen("data.txt", "w");
+    *GNUpipe = popen("gnuplot -persist", "w");
+
+    if (*GNUpipe == NULL)
     {
         printf("Falhou o GNUPIPE\n");
     }
-    
-    fprintf(GNUpipe, "set term x11 persist\n");
-    fprintf(GNUpipe, "set title \"Learning vs Interations\"\n");
 
-    // Loop para plotagem em tempo real
-    int x = 0;
-    int y;
-    while (1) {
-        // Gera um valor de exemplo para y (pode ser substituído pelo valor real)
-        y = rand() % 100;
+    fprintf(*GNUpipe, "set term x11 persist\n");
+    fprintf(*GNUpipe, "set title \"Learning vs Interations\"\n");
+}
 
-        // Obtém o tempo atual
-        time_t rawtime;
-        struct tm *timeinfo;
-        time(&rawtime);
-        timeinfo = localtime(&rawtime);
-        char timeString[9];
-        strftime(timeString, sizeof(timeString), "%H:%M:%S", timeinfo);
+void printLevel(FILE *GNUpipe, FILE *data_TXT, int level, int x)
+{
 
-        printf("Valores são: %d e %d", x++, y);
+    printf("Valores são: %d e %d", x++, level);
 
-        // Envia os valores para o Gnuplot
-        fprintf(data_TXT, "%d %d\n", x++, y);
-        fflush(data_TXT);
+    fprintf(data_TXT, "%d %d\n", x++, level);
+    fflush(data_TXT);
 
-        fprintf(GNUpipe, "plot 'data.txt' using 1:2 with lines lw 8\n");
-        fflush(GNUpipe);
-
-
-        // Limpa o buffer de entrada
-        //while (getchar() != '\n');
-
-        // Pausa por um curto período para simular tempo real
-        usleep(500000); // 500ms
-
-    }
-
-    // Fechando o pipe
-    fclose(data_TXT);
-
-    return 0;
+    fprintf(GNUpipe, "plot 'data.txt' using 1:2 with lines lw 8\n");
+    fflush(GNUpipe);
 }
