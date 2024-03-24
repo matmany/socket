@@ -16,7 +16,35 @@
 // port through which connection is to be made
 #define CONNECTION_PORT 4242
 
+void printValues(char storage_buffer[]);
+int getSocketDescriptor(struct sockaddr_in connection_address);
+int getClientSocket(struct sockaddr_in connection_address, int socket_descriptor);
+
 int main()
+{
+    char storage_buffer[80];
+    struct sockaddr_in connection_address;
+    int socket_descriptor = getSocketDescriptor(connection_address);
+    int client_socket = getClientSocket(connection_address, socket_descriptor);
+
+    while (1)
+    {
+        int bytes_read = read(client_socket, storage_buffer, 80);
+        storage_buffer[bytes_read] = '\0';
+        printf("Message from client: %s \n", storage_buffer);
+
+        if (strcmp(storage_buffer, "bye") == 0)
+        {
+            break;
+        }
+    }
+
+    close(socket_descriptor);
+    close(client_socket);
+    return 0;
+}
+
+int getSocketDescriptor(struct sockaddr_in connection_address)
 {
     // server socket
     int socket_descriptor;
@@ -29,7 +57,7 @@ int main()
     int option_value = 1;
     // server and client address structures
     struct sockaddr_in server_address;
-    struct sockaddr_in connection_address;
+    // struct sockaddr_in connection_address;
     char *message = "This is a message from the server";
     // creating the socket with IPv4 domain and TCP protocol
     socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -72,37 +100,26 @@ int main()
         perror("Couldn't listen for connections");
         exit(EXIT_FAILURE);
     }
-    length_of_address = sizeof(connection_address);
+
+    return socket_descriptor;
+}
+
+int getClientSocket(struct sockaddr_in connection_address, int socket_descriptor)
+{
+    int length_of_address = sizeof(connection_address);
     // accept connection signals from the client
-    client_socket = accept(socket_descriptor, (struct sockaddr *)&connection_address, &length_of_address);
+    int client_socket = accept(socket_descriptor, (struct sockaddr *)&connection_address, &length_of_address);
     // check if the server is accepting the signals from the client
     if (client_socket < 0)
     {
         perror("Couldn't establish connection with client");
         exit(EXIT_FAILURE);
     }
-    // Receive data sent by the client
+    return client_socket;
+}
 
-    // set the last index of the character array as a null character
-
-    // Send data to the client
-
-    // Close all the sockets created
-
-    while (1)
-    {
-        int bytes_read = read(client_socket, storage_buffer, 80);
-        storage_buffer[bytes_read] = '\0';
-        printf("Message from client: %s \n", storage_buffer);
-        
-        if(strcmp(storage_buffer, "bye") == 0)
-        {
-            break;
-        }
-
-    }
-
-    close(socket_descriptor);
-    close(client_socket);
-    return 0;
+void printValues(char storage_buffer[])
+{
+    int setValue;
+    int realValue;
 }
