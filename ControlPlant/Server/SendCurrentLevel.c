@@ -20,13 +20,25 @@
 #include <sqlite3.h>
 
 #include <unistd.h> // Para a função sleep
+#include <math.h> // para o exp
 
 #define CONNECTION_PORT 4243
+#define TAU 1.0           // Constante de tempo
+#define K 2.0             // Ganho
+#define FEEDBACK_GAIN 1.0 // Fator de realimentação
 
+typedef struct
+{
+    double time;
+    double value;
+} DataPair;
+
+void sendData(int client_socket, DataPair data);
 void setLevel(char storage_buffer[]);
 int saveLevel(int level);
 int getTargetValue();
 void getCurrentValue(int target, int *currentValue);
+double nivel_tanque(double entrada, double nivel_atual, double tempo);
 
 int main()
 {
@@ -40,11 +52,13 @@ int main()
     // option value for respective option_name
     int option_value = 1;
     int currentLevel = 0;
-    //int *addressValue = &currentLevel;
-    
+    // int *addressValue = &currentLevel;
+
     // server and client address structures
     struct sockaddr_in server_address;
     struct sockaddr_in connection_address;
+    DataPair data;
+
     char *message = "This is a message from the server";
     // creating the socket with IPv4 domain and TCP protocol
     socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
@@ -97,19 +111,31 @@ int main()
         exit(EXIT_FAILURE);
     }
 
+    double time = 0.0;
+    data.value = 0.0;
+    data.time = time;
+    int oldTarget = getTargetValue();
+    int target = oldTarget;
     while (1)
     {
-        int target =  getTargetValue();
+        target = getTargetValue();
+        if (data.time < 8)
+        {
+            data.value = nivel_tanque(target, data.value, data.time);
+            printf("Valores enviados: %lf, %lf\n", data.time, data.value);
+            send(client_socket, &data, sizeof(data), 0);
+            time += 0.05;
+            data.time = time;
+        }
+        else if (oldTarget != target)
+        {
+            oldTarget = target;
+            time = 0;
+            data.time = time;
+        }
 
-        getCurrentValue(target, &currentLevel);
-
-        int number_network_order = htonl(currentLevel);
-
-        printf("Valor lido do arquivo: %d\n", currentLevel);
-
-        send(client_socket, &number_network_order, sizeof(number_network_order), 0);
-
-        sleep(1);
+        //sleep(1);
+        usleep(200000); // 200ms
     }
 
     close(socket_descriptor);
@@ -117,12 +143,25 @@ int main()
     return 0;
 }
 
+void sendData(int client_socket, DataPair data)
+{
+    send(client_socket, &data, sizeof(data), 0);
+}
+
 void getCurrentValue(int target, int *currentValue)
 {
-    if(target > *currentValue)
+    if (target > *currentValue)
         *currentValue = *currentValue + 1;
-    if(target < *currentValue)
+    if (target < *currentValue)
         *currentValue = *currentValue - 1;
+}
+
+double nivel_tanque(double entrada, double nivel_atual, double tempo)
+{
+    double nivel_desejado = K * entrada;
+    double realimentacao = FEEDBACK_GAIN * nivel_atual; // Realimentação
+    double nivel_final = (nivel_desejado - realimentacao) * (1 - exp(-tempo / TAU));
+    return nivel_atual + (nivel_final - nivel_atual) * (1 - exp(-tempo / TAU));
 }
 
 int getTargetValue()
@@ -136,7 +175,7 @@ int getTargetValue()
         return 1;
     }
 
-        // Variável para armazenar o valor lido do arquivo
+    // Variável para armazenar o valor lido do arquivo
     int valor_lido;
 
     // Ler o valor do arquivo
@@ -144,9 +183,9 @@ int getTargetValue()
 
     // Fechar o arquivo
     fclose(arquivo);
-    
+
     // Exibir o valor lido
-    //printf("Valor lido do arquivo: %d\n", valor_lido);
+    // printf("Valor lido do arquivo: %d\n", valor_lido);
 
     return valor_lido;
 }

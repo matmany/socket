@@ -16,6 +16,13 @@
 
 #define CONNECTION_PORT 4243
 
+typedef struct
+{
+    double time;
+    double value;
+} DataPair;
+
+
 void setUpSocket(int *socket_descriptor, in_addr_t add);
 
 void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
@@ -27,6 +34,7 @@ int main()
     // Setup Socket
     int socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
     int receive_buffer;
+    DataPair data;
     setUpSocket(&socket_descriptor, INADDR_ANY); // inet_addr("3.86.248.23");
 
     // Setup File
@@ -36,12 +44,13 @@ int main()
 
     while (1)
     {
-        recv(socket_descriptor, &receive_buffer, sizeof(receive_buffer), 0);
+        recv(socket_descriptor, &data, sizeof(data), 0);
+        printf("Valores recebidos: %lf, %lf\n", data.time, data.value);
 
-        int received_number = ntohl(receive_buffer);
+        //int received_number = ntohl(receive_buffer);
 
-        printf("Valor Recebido: %d\n", received_number);
-        printLevel(GNUpipe, data_TXT, received_number, x++);
+        //printf("Valor Recebido: %d\n", received_number);
+        //printLevel(GNUpipe, data_TXT, received_number, x++);
     }
 
     close(socket_descriptor);
