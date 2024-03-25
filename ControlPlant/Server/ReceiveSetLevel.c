@@ -140,71 +140,27 @@ int saveLevel(int level)
     // Fechar o arquivo
     fclose(arquivo);
 
-    // Abrir o arquivo para leitura
-    arquivo = fopen("valor.txt", "r");
+    // // Abrir o arquivo para leitura
+    // arquivo = fopen("valor.txt", "r");
 
-    // Verificar se o arquivo foi aberto corretamente
-    if (arquivo == NULL)
-    {
-        printf("Erro ao abrir o arquivo.");
-        return 1;
-    }
+    // // Verificar se o arquivo foi aberto corretamente
+    // if (arquivo == NULL)
+    // {
+    //     printf("Erro ao abrir o arquivo.");
+    //     return 1;
+    // }
 
     // Variável para armazenar o valor lido do arquivo
-    int valor_lido;
+    // int valor_lido;
 
-    // Ler o valor do arquivo
-    fscanf(arquivo, "%d", &valor_lido);
+    // // Ler o valor do arquivo
+    // fscanf(arquivo, "%d", &valor_lido);
 
-    // Fechar o arquivo
-    fclose(arquivo);
+    // // Fechar o arquivo
+    // fclose(arquivo);
 
-    // Exibir o valor lido
-    printf("Valor lido do arquivo: %d\n", valor_lido);
+    // // Exibir o valor lido
+    // printf("Valor lido do arquivo: %d\n", valor_lido);
 
     return 0;
 }
-
-// int saveLevel(int level)
-// {
-//     sqlite3 *db;
-//     char *err_msg = 0;
-//     int rc = sqlite3_open("level.db", &db);
-
-//     if (rc != SQLITE_OK)
-//     {
-//         fprintf(stderr, "Não é possível abrir o banco de dados: %s\n", sqlite3_errmsg(db));
-//         sqlite3_close(db);
-//         return 1;
-//     }
-
-//     char *sql = "CREATE TABLE IF NOT EXISTS tanklevel (level INT);";
-
-//     rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
-
-//     if (rc != SQLITE_OK)
-//     {
-//         fprintf(stderr, "SQL error: %s\n", err_msg);
-//         sqlite3_free(err_msg);
-//         sqlite3_close(db);
-//         return 1;
-//     }
-
-//     // int valor = 42; // Valor que você deseja salvar
-//     char insert_sql[100];
-//     sprintf(insert_sql, "INSERT INTO tanklevel (level) VALUES (%d);", level);
-
-//     rc = sqlite3_exec(db, insert_sql, 0, 0, &err_msg);
-
-//     if (rc != SQLITE_OK)
-//     {
-//         fprintf(stderr, "SQL error: %s\n", err_msg);
-//         sqlite3_free(err_msg);
-//         sqlite3_close(db);
-//         return 1;
-//     }
-
-//     sqlite3_close(db);
-
-//     return 0;
-// }
