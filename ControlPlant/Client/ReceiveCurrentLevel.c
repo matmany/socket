@@ -26,7 +26,7 @@ typedef struct
 void setUpSocket(int *socket_descriptor, in_addr_t add);
 
 void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
-void printLevel(FILE *GNUpipe, FILE *data_TXT, int level, int x);
+void printLevel(FILE *GNUpipe, FILE *data_TXT, double level, double x);
 
 int main()
 {
@@ -47,10 +47,7 @@ int main()
         recv(socket_descriptor, &data, sizeof(data), 0);
         printf("Valores recebidos: %lf, %lf\n", data.time, data.value);
 
-        //int received_number = ntohl(receive_buffer);
-
-        //printf("Valor Recebido: %d\n", received_number);
-        //printLevel(GNUpipe, data_TXT, received_number, x++);
+        printLevel(GNUpipe, data_TXT, data.value, data.time);
     }
 
     close(socket_descriptor);
@@ -88,11 +85,11 @@ void setUpSocket(int *socket_descriptor, in_addr_t add)
     }
 }
 
-void printLevel(FILE *GNUpipe, FILE *data_TXT, int level, int x)
+void printLevel(FILE *GNUpipe, FILE *data_TXT, double level, double x)
 {
-    printf("Valores são: %d e %d", x++, level);
+    //printf("Valores são: %d e %d", x++, level);
 
-    fprintf(data_TXT, "%d %d\n", x++, level);
+    fprintf(data_TXT, "%.3f %.3f\n", x++, level);
     fflush(data_TXT);
 
     fprintf(GNUpipe, "plot 'data.txt' using 1:2 with lines lw 8\n");
