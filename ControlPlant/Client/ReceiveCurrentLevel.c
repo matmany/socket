@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 // has the sockaddr_in structure
 #include <netinet/in.h>
+#include <arpa/inet.h>
 // header for reading and write functions
 #include <fcntl.h>
 #include <stdio.h>

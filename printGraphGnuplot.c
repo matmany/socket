@@ -5,7 +5,7 @@
 
 #define MAX_POINTS 100
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
+void config_plot(FILE **GNUpipe, FILE **data_TXT);
 
 void printLevel(FILE *GNUpipe, FILE *data_TXT, int level, int x);
 
@@ -13,7 +13,7 @@ int main()
 {
     FILE *GNUpipe = NULL, *data_TXT = NULL;
 
-    setUpGraphPlot(&GNUpipe, &data_TXT);
+    config_plot(&GNUpipe, &data_TXT);
 
     int x = 0;
     int y;
@@ -28,7 +28,7 @@ int main()
     return 0;
 }
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT)
+void config_plot(FILE **GNUpipe, FILE **data_TXT)
 {
     *data_TXT = fopen("data.txt", "w");
     *GNUpipe = popen("gnuplot -persist", "w");

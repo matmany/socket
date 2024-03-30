@@ -6,7 +6,7 @@
 #define K 2.0             // Ganho
 #define FEEDBACK_GAIN 1.0 // Fator de realimentação
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
+void config_plot(FILE **GNUpipe, FILE **data_TXT);
 
 void printLevel(FILE *GNUpipe, FILE *data_TXT, float level, float x);
 
@@ -22,7 +22,7 @@ double nivel_tanque(double entrada, double nivel_atual, double tempo)
 int main()
 {
     FILE *GNUpipe = NULL, *data_TXT = NULL;
-    setUpGraphPlot(&GNUpipe, &data_TXT);
+    config_plot(&GNUpipe, &data_TXT);
     double entrada, nivel_atual, novo_nivel, tempo = 0.0;
 
     printf("Digite o valor atual do nível do tanque: ");
@@ -61,7 +61,7 @@ int main()
     return 0;
 }
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT)
+void config_plot(FILE **GNUpipe, FILE **data_TXT)
 {
     *data_TXT = fopen("data.txt", "w");
     *GNUpipe = popen("gnuplot -persist", "w");

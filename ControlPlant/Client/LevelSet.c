@@ -38,8 +38,8 @@ int main()
     server_address.sin_port = htons(CONNECTION_PORT);
     // set address to any address available
 
-    server_address.sin_addr.s_addr = INADDR_ANY;
-    // server_address.sin_addr.s_addr = inet_addr("3.86.248.23");
+    //server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_addr.s_addr = inet_addr("54.175.89.1");
 
     server_address.sin_zero[8] = '\0';
     // connect to the server

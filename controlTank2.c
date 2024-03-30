@@ -12,14 +12,14 @@ double nivel_tanque(double entrada, double nivel_atual, double tempo) {
     return nivel_atual + (nivel_final - nivel_atual) * (1 - exp(-tempo / TAU));
 }
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
+void config_plot(FILE **GNUpipe, FILE **data_TXT);
 
 void printLevel(FILE *GNUpipe, FILE *data_TXT, float level, float x);
 
 int main() {
 
     FILE *GNUpipe = NULL, *data_TXT = NULL;
-    setUpGraphPlot(&GNUpipe, &data_TXT);
+    config_plot(&GNUpipe, &data_TXT);
 
     double entrada, nivel_atual, novo_nivel, tempo = 0.0;
     
@@ -58,7 +58,7 @@ int main() {
 }
 
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT)
+void config_plot(FILE **GNUpipe, FILE **data_TXT)
 {
     *data_TXT = fopen("data.txt", "w");
     *GNUpipe = popen("gnuplot -persist", "w");

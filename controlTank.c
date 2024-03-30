@@ -5,7 +5,7 @@
 #define TAU 1.0  // Constante de tempo
 #define K 1.0    // Ganho
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT);
+void config_plot(FILE **GNUpipe, FILE **data_TXT);
 
 void printLevel(FILE *GNUpipe, FILE *data_TXT, float level, float x);
 
@@ -19,7 +19,7 @@ double nivel_tanque(double entrada, double nivel_atual, double tempo) {
 int main() {
     
     FILE *GNUpipe = NULL, *data_TXT = NULL;
-    setUpGraphPlot(&GNUpipe, &data_TXT);
+    config_plot(&GNUpipe, &data_TXT);
 
     double entrada, nivel_atual = 10, tempo = 0.0;
     
@@ -44,7 +44,7 @@ int main() {
     return 0;
 }
 
-void setUpGraphPlot(FILE **GNUpipe, FILE **data_TXT)
+void config_plot(FILE **GNUpipe, FILE **data_TXT)
 {
     *data_TXT = fopen("data.txt", "w");
     *GNUpipe = popen("gnuplot -persist", "w");
